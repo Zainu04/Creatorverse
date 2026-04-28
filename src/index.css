@@ -383,3 +383,53 @@ body {
   padding: 5rem 2rem;
   font-size: 1.1rem;
 }
+.view-info {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+/* URL BAR FIX */
+.url-bar {
+  width: 100%;              /* fixes right shift */
+  box-sizing: border-box;   /* keeps padding inside width */
+  padding: 10px 14px;
+  background: #f8fafc;
+  border: 1px solid #e5e7eb;
+  border-radius: 999px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #374151;
+}
+
+/* truncate long URLs nicely */
+.url-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* keep your button EXACTLY as-is, only spacing fix */
+.view-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
+/* FORCE VISIT BUTTON TO STAY YELLOW */
+a.btn-visit,
+a.btn-visit:link,
+a.btn-visit:visited,
+a.btn-visit:active {
+  color: #e8c547 !important;
+  text-decoration: none;
+}
+
+/* optional hover polish */
+a.btn-visit:hover {
+  opacity: 0.85;
+}

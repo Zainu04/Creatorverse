@@ -43,21 +43,34 @@ export default function ViewCreator() {
           </div>
         )}
         <div className="view-info">
-          <h1 className="view-name">{creator.name}</h1>
-          <p className="view-description">{creator.description}</p>
-          <a
-            href={creator.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="view-link"
-          >
-            Visit Channel ↗
-          </a>
-          <div className="view-actions">
-            <Link to={`/edit/${creator.id}`} className="btn-edit-large">Edit</Link>
-            <button onClick={handleDelete} className="btn-delete">Delete</button>
-          </div>
-        </div>
+  <h1 className="view-name">{creator.name}</h1>
+  <p className="view-description">{creator.description}</p>
+
+  <div className="url-bar">
+    <span className="url-icon">🔎</span>
+    <span className="url-text">{creator.url}</span>
+  </div>
+
+  <div className="view-actions">
+    <a
+      href={creator.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="btn-visit"
+    >
+      Visit Channel ↗
+    </a>
+
+    <Link to={`/edit/${creator.id}`} className="btn-edit-large">
+      Edit
+    </Link>
+
+    <button onClick={handleDelete} className="btn-delete">
+      Delete
+    </button>
+  </div>
+</div>
+        
       </div>
     </div>
   );
