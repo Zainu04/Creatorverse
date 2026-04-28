@@ -38,7 +38,7 @@ Here's a walkthrough of implemented required features:
 
  <img src='creatorverse.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
-GIF created with ScreenToGif / Kap
+GIF created with Kap
 
 ## Notes
 
