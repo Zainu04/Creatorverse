@@ -1,73 +1,83 @@
-import { useEffect, useState } from "react";
-import { useParams, Link, useNavigate } from "react-router-dom";
-import { supabase } from "../client";
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { supabase } from '../client';
 
 export default function EditCreator() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", url: "", description: "", imageURL: "" });
+  const [form, setForm] = useState({ name: '', url: '', description: '', imageURL: '' });
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
-    async function getData() {
-      const { data } = await supabase
-        .from("creators")
-        .select("*")
-        .eq("id", id)
+    async function fetchCreator() {
+      const { data, error } = await supabase
+        .from('creators')
+        .select('*')
+        .eq('id', id)
         .single();
-      if (data) setForm(data);
+      if (error) console.error(error);
+      else setForm(data);
+      setLoading(false);
     }
-    getData();
+    fetchCreator();
   }, [id]);
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  }
 
-  const update = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
     setSaving(true);
-    await supabase.from("creators").update(form).eq("id", id);
+    const { error } = await supabase
+      .from('creators')
+      .update({ name: form.name, url: form.url, description: form.description, imageURL: form.imageURL })
+      .eq('id', id);
+    if (error) { console.error(error); setSaving(false); return; }
     navigate(`/creator/${id}`);
-  };
+  }
 
-  const deleteCreator = async () => {
-    if (!window.confirm(`Delete ${form.name}?`)) return;
-    await supabase.from("creators").delete().eq("id", id);
-    navigate("/");
-  };
+  async function handleDelete() {
+    if (!confirm(`Delete ${form.name}?`)) return;
+    const { error } = await supabase.from('creators').delete().eq('id', id);
+    if (error) console.error(error);
+    else navigate('/');
+  }
+
+  if (loading) return <div className="loading">Loading...</div>;
 
   return (
-    <main className="container" style={{ maxWidth: "600px" }}>
-      <Link to={`/creator/${id}`}>← Back</Link>
-      <h2 style={{ marginTop: "1rem" }}>Edit {form.name}</h2>
+    <div className="page form-page">
+      <Link to={`/creator/${id}`} className="back-link">← Back</Link>
+      <h1 className="form-title">Edit Creator</h1>
 
-      <form onSubmit={update}>
+      <form onSubmit={handleSubmit} className="creator-form">
         <label>
-          Name
+          Name *
           <input name="name" value={form.name} onChange={handleChange} required />
         </label>
         <label>
-          Channel URL
+          Channel URL *
           <input name="url" value={form.url} onChange={handleChange} required />
         </label>
         <label>
-          Description
-          <textarea name="description" value={form.description} onChange={handleChange} required />
+          Description *
+          <textarea name="description" value={form.description} onChange={handleChange} required rows={4} />
         </label>
         <label>
-          Image URL <small>(optional)</small>
-          <input name="imageURL" value={form.imageURL || ""} onChange={handleChange} />
+          Image URL (optional)
+          <input name="imageURL" value={form.imageURL || ''} onChange={handleChange} />
         </label>
-        <div style={{ display: "flex", gap: "1rem" }}>
-          <button type="submit" aria-busy={saving} disabled={saving}>
-            {saving ? "Saving..." : "Save Changes"}
+        <div className="form-actions">
+          <button type="submit" className="btn-submit" disabled={saving}>
+            {saving ? 'Saving...' : 'Save Changes'}
           </button>
-          <button type="button" className="secondary" onClick={deleteCreator} style={{ color: "red" }}>
+          <button type="button" onClick={handleDelete} className="btn-delete">
             Delete Creator
           </button>
         </div>
       </form>
-    </main>
+    </div>
   );
 }

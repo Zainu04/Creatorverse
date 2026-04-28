@@ -1,46 +1,48 @@
-import { useEffect, useState } from "react";
-import { supabase } from "../client";
-import CreatorCard from "../components/CreatorCard";
-import { Link } from "react-router-dom";
+import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { supabase } from '../client';
+import Card from '../components/CreatorCard';
 
 export default function ShowCreators() {
   const [creators, setCreators] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    async function getCreators() {
-      const { data } = await supabase.from("creators").select("*").order("id");
-      setCreators(data || []);
+    async function fetchCreators() {
+      const { data, error } = await supabase.from('creators').select('*');
+      if (error) console.error(error);
+      else setCreators(data);
       setLoading(false);
     }
-    getCreators();
+    fetchCreators();
   }, []);
 
   return (
-    <main className="container">
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "2rem" }}>
-        <div>
-          <h1 style={{ margin: 0 }}>✨ Creatorverse</h1>
-          <p style={{ margin: 0, color: "var(--pico-muted-color)" }}>Creators worth following</p>
+    <div className="page">
+      <header className="site-header">
+        <div className="header-inner">
+          <h1 className="site-title">✦ Creatorverse</h1>
+          <p className="site-subtitle">A curated collection of creators worth following</p>
+          <Link to="/add" className="btn-add">+ Add Creator</Link>
         </div>
-        <Link to="/add" role="button">+ Add Creator</Link>
-      </div>
+      </header>
 
-      {loading && <p>Loading creators...</p>}
-
-      {!loading && creators.length === 0 && (
-        <p>No creators yet. <Link to="/add">Add one!</Link></p>
-      )}
-
-      <div style={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))",
-        gap: "1.5rem"
-      }}>
-        {creators.map((c) => (
-          <CreatorCard key={c.id} creator={c} />
-        ))}
-      </div>
-    </main>
+      <main className="main-content">
+        {loading ? (
+          <div className="loading">Loading creators...</div>
+        ) : creators.length === 0 ? (
+          <div className="empty-state">
+            <p>No creators yet. Add some!</p>
+            <Link to="/add" className="btn-add">+ Add Creator</Link>
+          </div>
+        ) : (
+          <div className="grid">
+            {creators.map((c) => (
+              <Card key={c.id} creator={c} />
+            ))}
+          </div>
+        )}
+      </main>
+    </div>
   );
 }

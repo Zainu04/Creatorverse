@@ -1,49 +1,74 @@
-import { useState } from "react";
-import { supabase } from "../client";
-import { Link, useNavigate } from "react-router-dom";
+import { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
+import { supabase } from '../client';
 
 export default function AddCreator() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ name: "", url: "", description: "", imageURL: "" });
-  const [saving, setSaving] = useState(false);
+  const [form, setForm] = useState({ name: '', url: '', description: '', imageURL: '' });
+  const [loading, setLoading] = useState(false);
 
-  const handleChange = (e) => {
+  function handleChange(e) {
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
+  }
 
-  const addCreator = async (e) => {
+  async function handleSubmit(e) {
     e.preventDefault();
-    setSaving(true);
-    await supabase.from("creators").insert(form);
-    navigate("/");
-  };
+    setLoading(true);
+    const { error } = await supabase.from('creators').insert([form]);
+    if (error) { console.error(error); setLoading(false); return; }
+    navigate('/');
+  }
 
   return (
-    <main className="container" style={{ maxWidth: "600px" }}>
-      <Link to="/">← Back</Link>
-      <h2 style={{ marginTop: "1rem" }}>Add a Creator</h2>
+    <div className="page form-page">
+      <Link to="/" className="back-link">← Back</Link>
+      <h1 className="form-title">Add a Creator</h1>
 
-      <form onSubmit={addCreator}>
+      <form onSubmit={handleSubmit} className="creator-form">
         <label>
-          Name
-          <input name="name" value={form.name} onChange={handleChange} placeholder="e.g. Ryan Trahan" required />
+          Name *
+          <input
+            name="name"
+            value={form.name}
+            onChange={handleChange}
+            placeholder="e.g. Ryan Trahan"
+            required
+          />
         </label>
         <label>
-          Channel URL
-          <input name="url" value={form.url} onChange={handleChange} placeholder="https://youtube.com/@..." required />
+          Channel URL *
+          <input
+            name="url"
+            value={form.url}
+            onChange={handleChange}
+            placeholder="https://youtube.com/@..."
+            required
+          />
         </label>
         <label>
-          Description
-          <textarea name="description" value={form.description} onChange={handleChange} placeholder="What do they make?" required />
+          Description *
+          <textarea
+            name="description"
+            value={form.description}
+            onChange={handleChange}
+            placeholder="What kind of content do they make?"
+            required
+            rows={4}
+          />
         </label>
         <label>
-          Image URL <small>(optional)</small>
-          <input name="imageURL" value={form.imageURL} onChange={handleChange} placeholder="https://..." />
+          Image URL (optional)
+          <input
+            name="imageURL"
+            value={form.imageURL}
+            onChange={handleChange}
+            placeholder="https://..."
+          />
         </label>
-        <button type="submit" aria-busy={saving} disabled={saving}>
-          {saving ? "Adding..." : "Add Creator"}
+        <button type="submit" className="btn-submit" disabled={loading}>
+          {loading ? 'Adding...' : 'Add Creator'}
         </button>
       </form>
-    </main>
+    </div>
   );
 }
