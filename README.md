@@ -36,7 +36,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented required features:
 
-👉🏿 <img src='YOUR_GIF_LINK_HERE.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+ <img src='creatorverse.gif' title='Video Walkthrough' width='' alt='Video Walkthrough' />
 
 GIF created with ScreenToGif / Kap
 
