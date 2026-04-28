@@ -1,15 +1,20 @@
+import { Link } from "react-router-dom";
+
 export default function CreatorCard({ creator }) {
-    return (
-        <div className="card">
-            <img src={creator.imageURL} alt={creator.name} />
+  return (
+    <div>
+      <h2>{creator.name}</h2>
 
-            <h2>{creator.name}</h2>
+      <p>{creator.description}</p>
 
-            <p>{creator.description}</p>
+      <a href={creator.url} target="_blank">
+        Visit
+      </a>
 
-            <a href={creator.URL} target="_blank">
-                Visit Channel
-            </a>
-        </div>
-    )
+      <br />
+
+      <Link to={`/creator/${creator.id}`}>View</Link>
+      <Link to={`/edit/${creator.id}`}>Edit</Link>
+    </div>
+  );
 }

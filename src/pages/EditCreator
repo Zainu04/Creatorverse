@@ -1,0 +1,42 @@
+import { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
+import { supabase } from "../client";
+
+export default function EditCreator() {
+  const { id } = useParams();
+  const [form, setForm] = useState({});
+
+  useEffect(() => {
+    async function getData() {
+      const { data } = await supabase
+        .from("creators")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      setForm(data);
+    }
+
+    getData();
+  }, [id]);
+
+  const update = async () => {
+    await supabase.from("creators").update(form).eq("id", id);
+  };
+
+  const deleteCreator = async () => {
+    await supabase.from("creators").delete().eq("id", id);
+  };
+
+  return (
+    <div>
+      <input
+        value={form.name || ""}
+        onChange={(e) => setForm({ ...form, name: e.target.value })}
+      />
+
+      <button onClick={update}>Update</button>
+      <button onClick={deleteCreator}>Delete</button>
+    </div>
+  );
+}

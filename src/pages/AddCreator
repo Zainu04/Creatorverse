@@ -1,0 +1,32 @@
+import { useState } from "react";
+import { supabase } from "../client";
+
+export default function AddCreator() {
+  const [form, setForm] = useState({
+    name: "",
+    url: "",
+    description: "",
+  });
+
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const addCreator = async (e) => {
+    e.preventDefault();
+
+    await supabase.from("creators").insert(form);
+
+    alert("Creator added!");
+  };
+
+  return (
+    <form onSubmit={addCreator}>
+      <input name="name" onChange={handleChange} placeholder="name" />
+      <input name="url" onChange={handleChange} placeholder="url" />
+      <input name="description" onChange={handleChange} placeholder="desc" />
+
+      <button type="submit">Add</button>
+    </form>
+  );
+}
